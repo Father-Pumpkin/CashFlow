@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: IncomeTracker!
+## Notes: Keeps track of gold earned and displays when requested.
+## Author: Father Pumpkin and Stewart Hughes
+IncomeTracker.lua
+IncomeTracker.xml
