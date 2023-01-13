@@ -12,7 +12,7 @@ function CashFlowAddon:OnEnable()
     self.db.char.goldThisSession = 0
     self.db.char.goldBeforeTransaction = tonumber(GetMoney())
     self:RegisterEvent("PLAYER_MONEY")
-    self.RegisterChatCommand("cfreset", "CashFlowReset")
+    self:RegisterChatCommand("cfreset", "CashFlowReset")
 end
 
 function CashFlowAddon:OnDisable()
