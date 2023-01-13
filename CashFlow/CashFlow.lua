@@ -1,9 +1,45 @@
 -- Create an instance of ACE3
-local CashFlowAddon = LibStub("AceAddon-3.0"):NewAddon("CashFlow", "AceConsole-3.0", "AceEvent-3.0")
+CashFlowAddon = LibStub("AceAddon-3.0"):NewAddon("CashFlow", "AceConsole-3.0", "AceEvent-3.0")
+local CashFlowAddon = _G.CashFlowAddon
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+
+local string_format = string.format
+local string_match = string.match
+local string_lower = string.lower
+local math_floor = math.floor
+local math_fmod = math.fmod
+
+
+local options = { 
+	name = "CashFlow",
+	handler = CashFlowAddon,
+	type = "group",
+	args = {
+		msg = {
+			type = "input",
+			name = "Message",
+			desc = "The message to be displayed when you get home.",
+			usage = "<Your message>",
+			get = "GetMessage",
+			set = "SetMessage",
+		},
+	},
+}
+
+function CashFlowAddon:GetMessage(info)
+	return self.message
+end
+
+function CashFlowAddon:SetMessage(info, value)
+	self.message = value
+end
 
 function CashFlowAddon:OnInitialize()
-    self:Print("CashFlow has been initialized")
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("CashFlow", options, nil)
     self.db = LibStub("AceDB-3.0"):New("CashFlowDB")
+    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("CashFlow", "CashFlow")
+    self:RegisterCommands()
+    
   end
 
 function CashFlowAddon:OnEnable()
@@ -12,7 +48,7 @@ function CashFlowAddon:OnEnable()
     self.db.char.goldBeforeTransaction = tonumber(GetMoney())
     if self.db.char.goldAllTime == nil then self.db.char.goldAllTime = 0 end
     self:RegisterEvent("PLAYER_MONEY")
-    self:RegisterCommands()
+    
 end
 
 function CashFlowAddon:RegisterCommands()
