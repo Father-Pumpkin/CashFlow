@@ -1,38 +1,36 @@
 -- Create an instance of ACE3
-MyCashFlowAddon = LibStub("AceAddon-3.0"):NewAddon("CashFlow", "AceConsole-3.0", "AceEvent-3.0")
+CashFlowAddon = LibStub("AceAddon-3.0"):NewAddon("CashFlow", "AceConsole-3.0", "AceEvent-3.0")
 
--- Register Chat Commands for CashFlow
---MyAddon:RegisterChatCommand("cfreport", "CashFlowReport")
-
-function MyCashFlowAddon:OnInitialize()
-    -- Code that you want to run when the addon is first loaded goes here.
-    --self.db = LibStub("AceDB-3.0"):New("CashFlowDB")
+function CashFlowAddon:OnInitialize()
     self:Print("CashFlow has been initialized")
+    self.db = LibStub("AceDB-3.0"):New("CashFlowDB")
 
-    -- TODO: update to be usable across more than 1 session
-    --local moneyThisSession = 0
-    --local currentMoney = GetMoney()
   end
 
-function MyCashFlowAddon:OnEnable()
+function CashFlowAddon:OnEnable()
     self:Print("CashFlow has been Enabled")
+    self.db.char.goldThisSession = 0
+    self.db.char.goldBeforeTransaction = tonumber(GetMoney())
     self:RegisterEvent("PLAYER_MONEY")
+    self.RegisterChatCommand("cfreset", "CashFlowReset")
 end
 
-function MyCashFlowAddon:OnDisable()
+function CashFlowAddon:OnDisable()
 end
 
-function MyCashFlowAddon:PLAYER_MONEY()
+function CashFlowAddon:CashFlowReset()
+    self.db.char.goldThisSession = 0
+    self:Print("Session gold has been reset to 0")
+end
+
+function CashFlowAddon:PLAYER_MONEY()
     -- will be called every time the player gains money
-    local currentMoney = GetMoney()
-    self:Print(currentMoney)
+    currentMoney = tonumber(GetMoney())
+    if currentMoney > self.db.char.goldBeforeTransaction then 
+        self.db.char.goldThisSession = self.db.char.goldThisSession + (currentMoney - self.db.char.goldBeforeTransaction)
+        self:Print("Money gained this session is: " .. math.floor((self.db.char.goldThisSession/10000)) .. "g " .. 
+        (math.floor((self.db.char.goldThisSession/100))%100) .. "s " .. self.db.char.goldThisSession%100 .. "c")
+    end
+    self.db.char.goldBeforeTransaction = currentMoney
 end
---[[
-function MyCashFlowAddon:CashFlowReport(input)
-    -- Process the slash command ('input' contains whatever follows the slash command)
-    self:Print(print(("I have earned %dg %ds %dc"):format(moneyThisSession / 100 / 100, (moneyThisSession / 100) % 100, moneyThisSession % 100));)
-  end
-  ]]
-  
-
   
