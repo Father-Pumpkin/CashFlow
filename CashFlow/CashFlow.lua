@@ -26,6 +26,10 @@ local options = {
 	},
 }
 
+local frame = AceGUI:Create("Frame")
+frame:SetTitle("CashFlow")
+frame:SetStatusText("CashFlow Income Tracker")
+
 function CashFlowAddon:GetMessage(info)
 	return self.message
 end
