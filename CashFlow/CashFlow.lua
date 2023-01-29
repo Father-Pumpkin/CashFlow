@@ -27,9 +27,25 @@ local options = {
 	},
 }
 
-local frame = AceGUI:Create("Frame")
-frame:SetTitle("CashFlow")
-frame:SetStatusText("CashFlow Income Tracker")
+function CashFlowAddon:CreateFrame()
+    self:Print("Creating the Frame")
+    local frame = AceGUI:Create("Frame")
+    frame:SetTitle("CashFlow")
+    frame:SetStatusText("CashFlow Income Tracker")
+    frame:SetLayout("List")
+    local resetButton = AceGUI:Create("Button")
+    resetButton:SetText("Reset")
+    resetButton:SetWidth(200)
+    resetButton:SetCallback("OnClick", function() CashFlowAddon:CashFlowReset() end)
+    frame:AddChild(resetButton)
+    self:Print("Reset Button Created")
+    local reportButton = AceGUI:Create("Button")
+    reportButton:SetText("Report")
+    reportButton:SetWidth(200)
+    reportButton:SetCallback("OnClick", function() CashFlowAddon:CashFlowReport() end)
+    frame:AddChild(reportButton)
+    self:Print("Report Button Created")
+end
 
 function CashFlowAddon:GetMessage(info)
 	return self.message
@@ -40,6 +56,7 @@ function CashFlowAddon:SetMessage(info, value)
 end
 
 function CashFlowAddon:OnInitialize()
+    self:Print("CashFlow has been Initialized")
     LibStub("AceConfig-3.0"):RegisterOptionsTable("CashFlow", options, nil)
     self.db = LibStub("AceDB-3.0"):New("CashFlowDB")
     self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("CashFlow", "CashFlow")
@@ -49,6 +66,7 @@ function CashFlowAddon:OnInitialize()
 
 function CashFlowAddon:OnEnable()
     self:Print("CashFlow has been Enabled")
+    self:CreateFrame()
     self.db.char.goldThisSession = 0
     self.db.char.goldBeforeTransaction = tonumber(GetMoney())
     if self.db.char.goldAllTime == nil then self.db.char.goldAllTime = 0 end
@@ -66,7 +84,7 @@ function CashFlowAddon:OnDisable()
 end
 
 function CashFlowAddon:CashFlowReset(input)
-    if input == "" then
+    if input == "" or input == nil then
         self.db.char.goldThisSession = 0
         self:Print("Session gold has been reset to 0")
     elseif input == "all" then
@@ -78,7 +96,7 @@ function CashFlowAddon:CashFlowReset(input)
 end
 
 function CashFlowAddon:CashFlowReport(input)
-    if input == "" then
+    if input == "" or input == nil then
         self:Print("Money gained this session is: " .. math.floor((self.db.char.goldThisSession/10000)) .. "g " .. 
         (math.floor((self.db.char.goldThisSession/100))%100) .. "s " .. self.db.char.goldThisSession%100 .. "c")
     elseif input == "all" then
