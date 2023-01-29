@@ -2,6 +2,7 @@
 CashFlowAddon = LibStub("AceAddon-3.0"):NewAddon("CashFlow", "AceConsole-3.0", "AceEvent-3.0")
 local CashFlowAddon = _G.CashFlowAddon
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceGUI = LibStub("AceGUI-3.0")
 
 local string_format = string.format
 local string_match = string.match
