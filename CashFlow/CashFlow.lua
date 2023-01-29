@@ -34,7 +34,7 @@ function CashFlowAddon:CreateFrame()
     frame:SetStatusText("CashFlow Income Tracker")
     frame:SetLayout("List")
     local resetButton = AceGUI:Create("Button")
-    resetButton:SetText("Reset")
+    resetButton:SetText("RESET")
     resetButton:SetWidth(200)
     resetButton:SetCallback("OnClick", function() CashFlowAddon:CashFlowReset() end)
     frame:AddChild(resetButton)
@@ -75,12 +75,29 @@ function CashFlowAddon:OnEnable()
 end
 
 function CashFlowAddon:RegisterCommands()
+    self:RegisterChatCommand("cf", "CashFlowChatCommandManager")
     self:RegisterChatCommand("cfreset", "CashFlowReset")
     self:RegisterChatCommand("cfhelp", "CashFlowHelp")
     self:RegisterChatCommand("cfreport", "CashFlowReport")
 end
 
 function CashFlowAddon:OnDisable()
+end
+
+function CashFlowAddon:CashFlowChatCommandManager(input)
+    if input == nil or input == "" or input == "help" then
+        self:CashFlowHelp()
+    elseif input == "reset" then
+        self:CashFlowReset()
+    elseif input == "reset all" then
+        self:CashFlowReset("all")
+    elseif input == "report" then
+        self:CashFlowReport()
+    elseif input == "report all" then
+        self:CashFlowReport("all")
+    else
+        self:Print(input .. " is not a valid option. Type \"/cf help\" for more info.")
+    end
 end
 
 function CashFlowAddon:CashFlowReset(input)
@@ -108,7 +125,7 @@ function CashFlowAddon:CashFlowReport(input)
 end
 
 function CashFlowAddon:CashFlowHelp(input)
-    if input == "" then
+    if input == "" or input == nil then
         self:Print("Possible Chat commands are:\n cfreset\n cfreset all\n cfhelp")
     elseif input == "cfreset" then
         self:Print("Options available to cfreset are blank for session reset or all for alltime reset.")
@@ -128,4 +145,3 @@ function CashFlowAddon:PLAYER_MONEY()
     end
     self.db.char.goldBeforeTransaction = currentMoney
 end
-  
